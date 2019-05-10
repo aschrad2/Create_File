@@ -11,7 +11,10 @@ NJ181818 would be created at the file within CTA Paid Taxes
 """
 
 import os
+import shutil
 
+
+# ======================== Read in a file name, create the file ==============================
 # Ask for the job number that the payer would like to start processing for payment
 jobRequested = input("What property tax job would you like to process?")
 
@@ -32,3 +35,24 @@ except OSError:
     print("Creation of the directory %s failed" % path)
 else:
     print("Succesfully created the directory %s " % path)
+    
+# ============================= Add in the supporting files ==================================    
+
+sourceBillExport = "C:\\Users\\austin.schrader\\Desktop\\My_Desktop_Documents\\ATemplateCopyFolder\\Bill export B Tool.xlsm"
+sourceDoNotPay = "C:\\Users\\austin.schrader\\Desktop\\My_Desktop_Documents\\ATemplateCopyFolder\\For Russell to review-Loan Template.xlsm"
+sourceForRussell = "C:\\Users\\austin.schrader\\Desktop\\My_Desktop_Documents\\ATemplateCopyFolder\\INTACCT Escrow Upload Template.xlsm"
+
+shutil.copyfile(sourceBillExport, "\\\\cottonwood\\Users\\Shared\\Taxes\\CTA Paid Taxes\\2019" + stateCode + fileName + "\\Bill export B Tool.xlsm")
+shutil.copyfile(sourceDoNotPay, "\\\\cottonwood\\Users\\Shared\\Taxes\\CTA Paid Taxes\\2019" + stateCode + fileName + "\\For Russell to review-Loan Template.xlsm")
+shutil.copyfile(sourceForRussell, "\\\\cottonwood\\Users\\Shared\\Taxes\\CTA Paid Taxes\\2019" + stateCode + fileName + "\\INTACCT Escrow Upload Template.xlsm")
+
+print("The supporting files have been added to the job folder!")
+
+
+
+
+
+
+
+
+
