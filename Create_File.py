@@ -12,18 +12,20 @@ NJ181818 would be created at the file within CTA Paid Taxes
 
 import os
 
+# Ask for the job number that the payer would like to start processing for payment
 jobRequested = input("What property tax job would you like to process?")
 
-# Ask for the job number that the payer would like to start processing for payment
-
-print(jobRequested)
 # Add in the necessary backslashes to a) add a backslash, 2) provide the escape. Ex: \NJ484848
 fileName = "\\" + jobRequested
-print(fileName)
 
-#fileName = \\NJ181015
-path = "\\\\cottonwood\\Users\\Shared\\Taxes\\CTA Paid Taxes\\2019\\DE" + fileName
+# Read the jobRequested's stateCode and append that state to the path
+stateCode = "\\" + fileName[1:3]
+print(stateCode)
 
+# Append the inputted fileName 
+path = "\\\\cottonwood\\Users\\Shared\\Taxes\\CTA Paid Taxes\\2019\\" + stateCode + fileName
+
+# Make the
 try:
     os.mkdir(path)
 except OSError:
