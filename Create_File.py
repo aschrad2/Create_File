@@ -16,14 +16,13 @@ import os.path
 
 # ======================== Read in a file name, create the file ==============================
 # Ask for the job number that the payer would like to start processing for payment
-jobRequested = input("What property tax job would you like to process?")
+jobRequested = input("What property tax job would you like to process? ")
 
 # Add in the necessary backslashes to a) add a backslash, 2) provide the escape. Ex: \NJ484848
 fileName = "\\" + jobRequested
 
 # Read the jobRequested's stateCode and append that state to the path
 stateCode = "\\" + fileName[1:3]
-print(stateCode)
 
 # Append the inputted fileName 
 path = "\\\\cottonwood\\Users\\Shared\\Taxes\\CTA Paid Taxes\\2019\\" + stateCode + fileName
@@ -38,7 +37,7 @@ else:
     
 # ============================= Add in the supporting files ==================================    
 
-print("Okay, now we're adding support files to the job folder we just created...")
+print("Adding supporting files...")
 
 # Grab the supporting files locations and save their paths as a variable
 sourceBillExport = "C:\\Users\\austin.schrader\\Desktop\\My_Desktop_Documents\\ATemplateCopyFolder\\Bill export B Tool.xlsm"
@@ -50,10 +49,13 @@ shutil.copyfile(sourceBillExport, "\\\\cottonwood\\Users\\Shared\\Taxes\\CTA Pai
 shutil.copyfile(sourceDoNotPay, "\\\\cottonwood\\Users\\Shared\\Taxes\\CTA Paid Taxes\\2019" + stateCode + fileName + "\\For Russell to review-Loan Template.xlsm")
 shutil.copyfile(sourceForRussell, "\\\\cottonwood\\Users\\Shared\\Taxes\\CTA Paid Taxes\\2019" + stateCode + fileName + "\\INTACCT Escrow Upload Template.xlsm")
 
-print("The supporting files have been added to the job folder!")
+print("Support files added!")
 
 # ========== Open Lereta, Download Job's Exceptions, main PDF, and main Excel =================
 
+print("Add these files to the job file: main PDF from Lereta's job, Excel sheet, and PDF exceptions.")
+
+input("Once those files are added, PRESS any key to continue...")
 # Requests, Beautiful soup to open Lereta's pages with what the url should be
 # Then, navigate to Exception's URL and download the PDF if there is one into the job's working folder
 # Then navigate to the disbursement's URL and download the PDF if there is one into the job's working folder
@@ -65,6 +67,35 @@ print("The supporting files have been added to the job folder!")
 ### COMPLETED - NEEDS INTEGRATION ### Copy Columns A, B, E, G, AF, AN into a new file called Export-Final
 ### COMPLETED - NEEDS INTEGRATION ### When choosing F - M, if O == "1" then answer = G. If O == "2" then answer = I, etc
 ### COMPLETED - NEEDS INTEGRATION ### Output an excel file that indicates the order of name of the counties, the installment year, and installment period
+
+# To use the openpyxl module, we first have to convert the Excel file Export-TCS36501 from xls into xlsx file format
+import win32com.client as win32
+# Openpyxl is the module that's doing the editing of an excel. However, it can only wrok with .xlsx formats
+#import openpyxl
+import pandas
+
+# Job fileName and job stateCode, hardcoded which should be replaced later
+#fileName = "\\NJ666666"
+#stateCode = "\\NJ"
+
+# Opens the .xls file located at this location
+fname = "\\\\cottonwood\\Users\\Shared\\Taxes\\CTA Paid Taxes\\2019" + stateCode + fileName + "\\Export-TCS36501.xls"
+excel = win32.gencache.EnsureDispatch('Excel.Application')
+wb = excel.Workbooks.Open(fname)
+
+# Saves the .xls file as .xlsx (ie, it converts the filetype to the filetype that we can use)
+wb.SaveAs(fname+"x", FileFormat = 51)    #FileFormat = 51 is for .xlsx extension
+wb.Close()                               #FileFormat = 56 is for .xls extension
+excel.Application.Quit()
+
+# Establishes the path for the .xlsx file (the version that we can work with)
+jobPath = ("\\\\cottonwood\\Users\\Shared\\Taxes\\CTA Paid Taxes\\2019" + stateCode + fileName)
+exportFilePath = "\\\\cottonwood\\Users\\Shared\\Taxes\\CTA Paid Taxes\\2019" + stateCode + fileName + "\\Export-TCS36501.xlsx"
+
+# Reads the excel and parses out columns 0,1,4,6 etc (all the ones we need.)
+# Then, it exports the file to the jobPath + \\output.xlsx
+dataframe = pandas.read_excel(exportFilePath, parse_cols = [0, 1, 4, 6, 8, 10, 12, 14, 15, 28, 31, 39])
+dataframe.to_excel(jobPath + "\\output.xlsx")
 
 # ============================== Format the PDF file ==========================================
 
